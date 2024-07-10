@@ -1,5 +1,6 @@
 import logging
 import cv2
+import torch
 from facenet_pytorch import MTCNN
 from deepface import DeepFace
 

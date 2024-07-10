@@ -1,3 +1,4 @@
+from datetime import datetime as dt
 import json
 import pygame
 
@@ -203,3 +204,66 @@ class Level:
         self.entityList.append(
             RedMushroom(self.screen, self.sprites.spriteCollection, x, y, self, self.sound)
         )
+
+
+class DynamicLevel(Level):
+    def __init__(self, screen, sound, dashboard):
+        self.start_time = dt.now()
+        
+        super().__init__(screen, sound, dashboard)
+        self.frame = 0
+        self.initial_length = 0
+        self.max_pos_cam = 0
+        self.n_extention = 0
+
+    def loadLevel(self, levelname):
+        super().loadLevel(levelname)
+        self.levelname = levelname
+        self.initial_length = len(self.level[0])
+        with open(f"./levels/{levelname}.json", "r") as jsonData:
+            self.json_data = json.load(jsonData)
+
+    def update(self, camera):
+        self.frame += 1
+        now_time = dt.now() - self.start_time
+        now_time = str(now_time).split(".")[0]
+
+        self.max_pos_cam = max(self.max_pos_cam, abs(round(camera.pos.x)))
+        new_level_length = self.initial_length + self.max_pos_cam
+        self.levelLength = max(self.levelLength, new_level_length)
+        self.drawLevel(camera)
+        
+        print(now_time, self.frame, self.levelLength)
+
+    def drawLevel(self, camera):
+        self.camera = camera
+        self.extend_level()
+        super().drawLevel(camera)
+        
+    def extend_level(self):
+        current_length = len(self.level[0])
+        extension = self.levelLength - current_length
+        if extension > 0:
+            for i in range(extension):
+                new_sky_layer = [
+                    Tile(self.sprites.spriteCollection.get("sky"), None)
+                    for y in range(0, 13)
+                ]
+                new_ground_layer = [
+                    Tile(
+                        self.sprites.spriteCollection.get("ground"),
+                        pygame.Rect((current_length + i) * 32, (y-1) * 32, 32, 32),
+                    )
+                    for y in range(14, 16)
+                ]
+                new_column = new_sky_layer + new_ground_layer
+                for row, tile in enumerate(new_column):
+                    self.level[row].append(tile)
+            self.n_extention += extension
+            self.add_items()
+    
+    def add_items(self):
+        if self.n_extention % 15 == 0:
+            self.addRandomBox(self.levelLength - 1, 10, "RedMushroom")
+        elif self.n_extention % 5 == 0:
+            self.addRandomBox(self.levelLength - 1, 10, "coin")

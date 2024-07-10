@@ -1,6 +1,6 @@
 import pygame
 from classes.Dashboard import Dashboard
-from classes.Level import Level
+from classes.Level import DynamicLevel as Level
 from classes.Menu import Menu
 from classes.Sound import Sound
 from entities.Mario import Mario
@@ -30,7 +30,7 @@ def main():
         if mario.pause:
             mario.pauseObj.update()
         else:
-            level.drawLevel(mario.camera)
+            level.update(mario.camera)
             dashboard.update()
             mario.update()
         pygame.display.update()
