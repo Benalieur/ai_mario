@@ -28,21 +28,22 @@ class Collider:
                             self.entity.rect.left = tile.rect.right
                             self.entity.vel.x = 0
 
+
     def checkY(self):
         self.entity.onGround = False
-        
         try:
             rows = [
                 self.level[self.entity.getPosIndex().y],
                 self.level[self.entity.getPosIndex().y + 1],
                 self.level[self.entity.getPosIndex().y + 2],
             ]
-        except Exception:
+        except Exception as e:
             try:
                 self.entity.gameOver()
-            except Exception:
+            except Exception as e:
                 self.entity.alive = None
             return
+        
         for row in rows:
             tiles = row[self.entity.getPosIndex().x : self.entity.getPosIndex().x + 2]
             for tile in tiles:

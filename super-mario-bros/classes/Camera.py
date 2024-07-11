@@ -13,6 +13,7 @@ class Camera:
 
     def move(self):
         xPosFloat = self.entity.getPosIndexAsFloat().x
-        self.pos.x = -xPosFloat + 10  # Retirer la condition pour permettre un mouvement infini
+        if 10 < xPosFloat:
+            self.pos.x = -xPosFloat + 10
         self.x = self.pos.x * 32
         self.y = self.pos.y * 32

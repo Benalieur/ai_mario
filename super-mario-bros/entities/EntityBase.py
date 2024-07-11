@@ -21,6 +21,12 @@ class EntityBase(object):
     def applyGravity(self):
         if self.obeyGravity:
             self.vel.y += self.gravity
+            # Vérifier les limites avant d'appliquer la gravité
+            grid_y = (self.rect.y + self.vel.y) // 32
+            if grid_y >= self.levelObj.levelLength:
+                self.vel.y = 0
+                self.alive = None
+
 
     def updateTraits(self):
         for trait in self.traits.values():

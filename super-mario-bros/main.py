@@ -1,6 +1,6 @@
 import pygame
 from classes.Dashboard import Dashboard
-from classes.Level import DynamicLevel as Level
+from classes.Level import Level
 from classes.Menu import Menu
 from classes.Sound import Sound
 from entities.Mario import Mario
@@ -33,6 +33,7 @@ def main():
             level.update(mario.camera)
             dashboard.update()
             mario.update()
+
         pygame.display.update()
         clock.tick(max_frame_rate)
     return 'restart'

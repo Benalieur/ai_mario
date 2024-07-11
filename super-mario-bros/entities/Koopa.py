@@ -10,7 +10,7 @@ from traits.leftrightwalk import LeftRightWalkTrait
 
 class Koopa(EntityBase):
     def __init__(self, screen, spriteColl, x, y, level, sound):
-        super(Koopa, self).__init__(y - 1, x, 1.25)
+        super(Koopa, self).__init__(x, y - 1, 1.25)
         self.spriteCollection = spriteColl
         self.animation = Animation(
             [
@@ -28,6 +28,9 @@ class Koopa(EntityBase):
         self.EntityCollider = EntityCollider(self)
         self.levelObj = level
         self.sound = sound
+    
+    def __str__(self) -> str:
+        return f"Koopa - alive: {self.alive}, active: {self.active}, bouncing: {self.bouncing}"
 
     def update(self, camera):
         if self.alive and self.active:
@@ -72,9 +75,14 @@ class Koopa(EntityBase):
 
     def updateAlive(self, camera):
         self.applyGravity()
+        
         self.drawKoopa(camera)
+        
         self.animation.update()
+        
         self.leftrightTrait.update()
+        
+
 
     def checkEntityCollision(self):
         for ent in self.levelObj.entityList:
